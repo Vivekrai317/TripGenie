@@ -1,0 +1,46 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.img1{
+    height: auto;
+    width: 270px;
+    position: absolute;
+    left: 5.5%;
+    top: 20%;
+    z-index: -1;
+    opacity: 0.8;
+    border-radius: 5%;
+    transition: margin 0.5s ease;
+}
+.img1:hover{
+    margin-top: 15px;
+}
+.img2:hover{
+    margin-bottom: 15px;
+}
+.img3:hover{
+    margin-right: 15px;
+}
+.img2{
+    height: 250px;
+    width: 300px;
+    position: absolute;
+    right: 7%;
+    z-index: -1;
+    bottom: 6%;
+    border-radius: 5%;
+    opacity: 0.9;
+    transition: margin 0.5s ease;
+}
+.img3{
+    height: 300px;
+    width: 330px;
+    position: absolute;
+    right: 25%;
+    top: 18%;
+    transition: margin 0.5s ease;
+    z-index: -1;
+}
