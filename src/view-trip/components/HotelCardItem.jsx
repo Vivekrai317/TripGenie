@@ -1,6 +1,8 @@
 import { GetPlaceDetails, PHOTO_REF_URL } from "@/Service/GlobalAPI";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 function HotelCardItem({hotel}){
 
@@ -22,7 +24,7 @@ function HotelCardItem({hotel}){
     return(
         <Link to={'https://www.google.com/maps/search/?api=1&query='+hotel?.hotelName+","+hotel?.hotelAddress} target="_blank">
         <div className="hover:scale-105 transition-all cursor-pointer">
-            <img src={photoURL?photoURL:"/placeholder.jpg"} className="rounded-xl h-[200px] w-full object-cover" />
+            <LazyLoadImage effect="blur" src={photoURL} className="rounded-xl h-[200px] w-[250px] object-cover" />
             <div className="my-2 flex flex-col gap-1">
                 <h2 className="font-medium">{hotel?.hotelName}</h2>
                 <h2 className="flex text-xs text-gray-500">📍 {hotel?.hotelAddress}</h2>
