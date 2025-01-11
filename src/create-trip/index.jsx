@@ -29,7 +29,7 @@ import Footer from '@/view-trip/components/Footer';
 export function CreateTrip() {
     const [place, setPlace] = useState();
     const [formData, setFormData] = useState([]);
-    const [loading,setLoading]=useState(false);
+    const [loading, setLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const handleInputChange = (name, value) => {
         setFormData({
@@ -37,17 +37,17 @@ export function CreateTrip() {
             [name]: value
         })
     }
-    
-    const navigate=useNavigate();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log(formData);
     }, [formData])
 
-    
-    const login=useGoogleLogin({
-        onSuccess:(codeResponse)=>getUserProfile(codeResponse),
-        onError:(error)=>console.log(error),
+
+    const login = useGoogleLogin({
+        onSuccess: (codeResponse) => getUserProfile(codeResponse),
+        onError: (error) => console.log(error),
     })
 
 
@@ -59,7 +59,7 @@ export function CreateTrip() {
             return;
         }
 
-        if (formData?.noOfDays > 10 ||formData?.noOfDays==undefined || !formData?.location || !formData?.budget || !formData.traveler) {
+        if (formData?.noOfDays > 10 || formData?.noOfDays == undefined || !formData?.location || !formData?.budget || !formData.traveler) {
             toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
@@ -82,32 +82,32 @@ export function CreateTrip() {
         SaveAITrip(result?.response?.text());
     }
 
-    const getUserProfile=(tokenInfo)=>{
-        axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`,{
-            headers:{
-                Authorization:`Bearer ${tokenInfo?.access_token}`,
-                Accept:'Application/json'
+    const getUserProfile = (tokenInfo) => {
+        axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`, {
+            headers: {
+                Authorization: `Bearer ${tokenInfo?.access_token}`,
+                Accept: 'Application/json'
             }
-        }).then((res)=>{
+        }).then((res) => {
             console.log(res);
-            localStorage.setItem('user',JSON.stringify(res.data));
+            localStorage.setItem('user', JSON.stringify(res.data));
             setOpenDialog(false);
             onGenerateTrip();
         })
     }
 
-    const SaveAITrip=async(TripData)=>{
+    const SaveAITrip = async (TripData) => {
         setLoading(true)
-        const user=JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(localStorage.getItem('user'));
         const docID = Date.now().toString()
-        await setDoc(doc(db,"AITrips",docID),{
-            userSelection:formData,
-            tripData:JSON.parse(TripData),
-            userEmail:user?.email,
-            id:docID
+        await setDoc(doc(db, "AITrips", docID), {
+            userSelection: formData,
+            tripData: JSON.parse(TripData),
+            userEmail: user?.email,
+            id: docID
         });
         setLoading(false);
-        navigate('/view-trip/'+docID)
+        navigate('/view-trip/' + docID)
     }
     return (
         <>
@@ -125,14 +125,21 @@ export function CreateTrip() {
                                 onChange: (v) => {
                                     setPlace(v);
                                     handleInputChange('location', v)
-                                }
+                                },
+                                isClearable: true,
+                                placeholder: "Search for places...",
                             }}
                         />
                     </div>
                     <div>
                         <h2 className='text-xl my-3 font-medium'>For how many days are you planning your trip?</h2>
-                        <Input placeholder={'Please enter a number between 1-10'} type="number"
-                            onChange={(e) => { handleInputChange('noOfDays', e.target.value) }} />
+                        <Input placeholder={'Enter a number between 1-15'} type="number"
+                        min="1" max="15"
+                            onWheel={(e) => e.target.blur()}
+                            onChange={(e) => {
+                                if(e.target.value>15)e.target.value=15;
+                                 handleInputChange('noOfDays', e.target.value) 
+                                 }} />
                     </div>
                 </div>
                 <div>
@@ -165,11 +172,11 @@ export function CreateTrip() {
                 </div>
                 <div className='my-10 justify-end flex'>
                     <Button
-                    disabled={loading}
-                    onClick={onGenerateTrip}>
-                    {loading?<TbFidgetSpinner className='h-7 w-7 animate-spin'/>:
-                    'Generate Trip'
-                    }
+                        disabled={loading}
+                        onClick={onGenerateTrip}>
+                        {loading ? <TbFidgetSpinner className='h-7 w-7 animate-spin' /> :
+                            'Generate Trip'
+                        }
                     </Button>
                 </div>
                 {/* can use modal */}
@@ -178,24 +185,24 @@ export function CreateTrip() {
                         <DialogHeader>
                             <DialogDescription>
                                 <div className='flex'>
-                                    <img src='/logo.svg'/>
+                                    <img src='/logo.svg' />
                                     <div className='flex flex-col'>
-                                    <h2 className='font-bold text-lg mt-7'>Sign in with Google</h2>
-                                    <p>Sign in to the app with Google authentication securely.</p>
+                                        <h2 className='font-bold text-lg mt-7'>Sign in with Google</h2>
+                                        <p>Sign in to the app with Google authentication securely.</p>
                                     </div>
                                 </div>
                                 <Button
-                                onClick={login}
-                                className='w-full mt-5 flex gap-3 items-center'>
+                                    onClick={login}
+                                    className='w-full mt-5 flex gap-3 items-center'>
                                     <FcGoogle className='h-6 w-6' />
                                     Sign in with Google
-                                    </Button>
+                                </Button>
                             </DialogDescription>
                         </DialogHeader>
                     </DialogContent>
                 </Dialog>
             </div>
-            <Footer/>
+            <Footer />
         </>
     )
 }
